@@ -1,3 +1,5 @@
+#define MAX_GAME_SIZE 3584
+
 class Chip_8
 {
 
@@ -23,7 +25,7 @@ private:
   unsigned short pc;
 
   //Graphics
-  unsigned char gfx[64 * 32];
+  unsigned char gfx[64][32];
 
   //Timers
   unsigned char delayTimer;
