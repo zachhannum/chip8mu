@@ -1,7 +1,9 @@
-#define MAX_GAME_SIZE 3584
 
-class Chip_8
-{
+#define MAX_GAME_SIZE 3584
+#define VX_MASK(x) ((x & 0x0F00) >> 8)
+#define VY_MASK(y) ((y & 0x00F0) >> 4)
+
+class Chip_8{
 
 private:
   //current opcode
@@ -21,11 +23,8 @@ private:
   unsigned char v[16];
 
   //Index register and Program Counter
-  unsigned short index;
+  unsigned short I;
   unsigned short pc;
-
-  //Graphics
-  unsigned char gfx[64][32];
 
   //Timers
   unsigned char delayTimer;
@@ -44,8 +43,24 @@ private:
   void readRom();
 
 public:
+
+  //Graphics
+  /*
+   ________________
+  |0,0         63,0|
+  |                |
+  |                |
+  |0,31_______63,31|
+
+  */
+  unsigned char gfx[64][32];
+
+  unsigned int drawFlag;
+
   void initialize();
   void cycle();
   void loadGame();
+  void timers();
+  void setKeys();
 
 };
