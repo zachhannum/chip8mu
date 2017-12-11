@@ -52,15 +52,6 @@ void Chip_8::initialize(){
   for(int i = 0; i < 80; i++){
     mem[i] = chip8Font[i];
   }
-
-
-  //TODO
-  //clear stack
-  //clear display
-  //clear v registers
-  //reset timers
-
-  //initInput();
 }
 
 void Chip_8::setKeys(){
@@ -85,6 +76,10 @@ void Chip_8::setKeys(){
           case SDLK_x: key[0x0] = 1; break;
           case SDLK_c: key[0xB] = 1; break;
           case SDLK_v: key[0xF] = 1; break;
+          case SDLK_t: {
+            themeFlag = 1;
+            break;
+          }
           case SDLK_p: {
             debugFlag ^= 1;
             break;
@@ -99,15 +94,15 @@ void Chip_8::setKeys(){
             if(cycleControl < 12){
               cycleControl++;
               cycleCount = cycleControl;
-              break;
             }
+            break;
           }
           case SDLK_DOWN: {
             if(cycleControl > 1){
               cycleControl--;
               cycleCount = cycleControl;
-              break;
             }
+            break;
           }
           case SDLK_ESCAPE: exit(1); break;
           default: break;
@@ -141,7 +136,6 @@ void Chip_8::setKeys(){
 //decode opcode
 //execute opcode
 //update timers
-//TODO: 0xFX0A
 void Chip_8::cycle(){
 
   //fetch and execute cycleCount instructions

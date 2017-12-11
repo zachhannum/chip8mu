@@ -60,6 +60,10 @@ void cycleCPU(){
   //Cycle cpu
   chip8.cycle();
   //Update graphics
+  if(chip8.themeFlag){
+    chip8.themeFlag = 0;
+    display.cycleTheme();
+  }
   if(chip8.drawFlag){
     display.drawGraphics(chip8.gfx);
     chip8.drawFlag = 0;
@@ -84,6 +88,10 @@ void pollPause(){
     //store pressed down keys
     if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
+        case SDLK_t: {
+          chip8.themeFlag = 1;
+          break;
+        }
         case SDLK_p: {
           chip8.debugFlag ^= 1;
           break;
@@ -102,15 +110,15 @@ void pollPause(){
           if(chip8.cycleControl < 12){
             chip8.cycleControl++;
             chip8.cycleCount = chip8.cycleControl;
-            break;
           }
+          break;
         }
         case SDLK_DOWN: {
           if(chip8.cycleControl > 1){
             chip8.cycleControl--;
             chip8.cycleCount = chip8.cycleControl;
-            break;
           }
+          break;
         }
         case SDLK_ESCAPE: exit(1); break;
         default: break;

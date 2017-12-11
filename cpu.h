@@ -58,6 +58,7 @@ public:
   int cycleCount;
   int cycleControl;
   unsigned int debugFlag;
+  unsigned int themeFlag;
 
   void initialize();
   void cycle();
