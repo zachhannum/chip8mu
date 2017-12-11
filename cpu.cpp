@@ -12,8 +12,8 @@
 #include "cpu.h"
 #include "SDL/SDL.h"
 
-const char *Chip_8::name = "invaders.rom";
-extern volatile int timerFlag;
+extern int pauseFlag;
+
 
 unsigned char chip8Font[80] =
 {
@@ -42,6 +42,10 @@ void Chip_8::initialize(){
   opcode = 0;     //Reset opcode
   I      = 0;     //Reset index reg
   sp     = 0;     //Reset stack pointer
+
+
+  cycleCount = 8; //set initial instruction speed
+  cycleControl = 8; // used for speed controls
 
   //clear memory and load font
   memset(mem, 0, sizeof mem);
@@ -81,6 +85,30 @@ void Chip_8::setKeys(){
           case SDLK_x: key[0x0] = 1; break;
           case SDLK_c: key[0xB] = 1; break;
           case SDLK_v: key[0xF] = 1; break;
+          case SDLK_p: {
+            debugFlag ^= 1;
+            break;
+          }
+          case SDLK_SPACE: {
+            pauseFlag ^= 1;
+            if(pauseFlag) cycleCount = 1;
+            else cycleCount = cycleControl;
+            break;
+          }
+          case SDLK_UP: {
+            if(cycleControl < 12){
+              cycleControl++;
+              cycleCount = cycleControl;
+              break;
+            }
+          }
+          case SDLK_DOWN: {
+            if(cycleControl > 1){
+              cycleControl--;
+              cycleCount = cycleControl;
+              break;
+            }
+          }
           case SDLK_ESCAPE: exit(1); break;
           default: break;
         }
@@ -116,9 +144,9 @@ void Chip_8::setKeys(){
 //TODO: 0xFX0A
 void Chip_8::cycle(){
 
-  //fetch and execute 12 instructions - makes total speed 760 instr/sec
+  //fetch and execute cycleCount instructions
   //set i to 1 for debugging step by step
-  for(int i = 0; i < 12; i++){
+  for(int i = 0; i < cycleCount; i++){
 
     //fetch opcode
     opcode = mem[pc] << 8 | mem[pc + 1];
@@ -348,7 +376,7 @@ void Chip_8::cycle(){
           for(unsigned char x = 0; x < 8; x++){
             //insert pixel into graphics
             unsigned char t_x = (vx + x)%64;
-            unsigned char t_y = (vy + y)%32;
+            unsigned char t_y = (vy + y);
             if(p & (0x80 >> x)){
               //check to make sure pixel is in valid range
               if((t_x < 64) && (t_y < 32)){
@@ -411,10 +439,12 @@ void Chip_8::cycle(){
         // 0xFX0A - LD Vx, K - type: KeyOp
         // Wait for key press, store value in Vx
         case 0x000A:
-        printf("Waiting for keypress...");
-        while(1){}
-        //TODO wait for keypress
-        pc += 2;
+          for(int i=0; i < 0xF; i++){
+            if(key[i]){
+              v[VX_MASK(opcode)] = i;
+              pc += 2;
+            }
+          }
         break;
 
         // 0xFX15 - LD DT, Vx - type: Timer
@@ -463,7 +493,7 @@ void Chip_8::cycle(){
         // 0xFX55 - LD [I], Vx - type: MEM
         // Store registers V0 through Vx in memory starting at I.
         case 0x0055:
-        for(int i = 0; i < 0xF; i++){
+        for(int i = 0; i <= VX_MASK(opcode); i++){
           mem[I + i] = v[i];
         }
         pc += 2;
@@ -472,7 +502,7 @@ void Chip_8::cycle(){
         // 0xFX65 - LD Vx, [I] - type: MEM
         // Read registers V0 through Vx from memory starting at I.
         case 0x0065:
-        for(int i = 0; i < VX_MASK(opcode); i++){
+        for(int i = 0; i <= VX_MASK(opcode); i++){
           v[i] = mem[I + i];
         }
         pc += 2;
@@ -488,17 +518,19 @@ void Chip_8::cycle(){
   timers();
 
   //debugging instruction by intstruction
-  printf("Opcode = %04x\n" , opcode);
-  for(int i = 0; i < 16; i++){
-  printf("v[%x] = %02x    stack[%x] = %02x   key[%x] = %02x\n",i,v[i],i,stack[i], i, key[i]);
-}
-printf("pc = %x\n", pc);
-printf("sp = %x\n" , sp);
-printf("I  = %x\n", I);
-printf("delayTimer = %d\n", delayTimer);
-printf("soundTimer = %d\n" , soundTimer);
+  if(debugFlag){
+    printf("Opcode = %04x\n" , opcode);
+    for(int i = 0; i < 16; i++){
+      printf("v[%x] = %02x    stack[%x] = %02x   key[%x] = %02x\n",i,v[i],i,stack[i], i, key[i]);
+    }
+    printf("pc = %x\n", pc);
+    printf("sp = %x\n" , sp);
+    printf("I  = %x\n", I);
+    printf("delayTimer = %d\n", delayTimer);
+    printf("soundTimer = %d\n" , soundTimer);
+  }
 
-//while (std::cin.get() != '\n');
+
 
 
 
@@ -513,13 +545,8 @@ void Chip_8::timers(){
   }
 }
 
+
 void Chip_8::loadGame(){
-
-  readRom();
-
-}
-
-void Chip_8::readRom(){
 
   //temporary memory buffer
   unsigned char buf[MAX_GAME_SIZE];
@@ -530,6 +557,7 @@ void Chip_8::readRom(){
   //error if game file does not exist
   if(game == NULL){
     printf("Failed to open game.\n");
+    exit(0);
   }
 
   //read rom data into temporary buffer

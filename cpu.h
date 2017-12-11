@@ -37,10 +37,6 @@ private:
   //Keypad
   unsigned char key[16];
 
-  //Game name
-  static const char * name;
-
-  void readRom();
 
 public:
 
@@ -55,7 +51,13 @@ public:
   */
   unsigned char gfx[64][32];
 
+  //Game name
+  char * name;
+
   unsigned int drawFlag;
+  int cycleCount;
+  int cycleControl;
+  unsigned int debugFlag;
 
   void initialize();
   void cycle();
