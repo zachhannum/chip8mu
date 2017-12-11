@@ -1,6 +1,6 @@
 # Chip8mu: Chip 8 Emulator in C++
 
-Chip8mu is a Chip-8 emulator built in C++. 
+Chip8mu is a Chip-8 emulator built in C++. In addition to the standard built in controls, chip8mu also has pause functionality, speed controls, color themes, and a command line debugger with the ability to step through games one cpu cycle at a time.
 
 ![pong](https://github.com/zachhannum/chip8mu/blob/master/gifs/pong.gif)
 
