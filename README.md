@@ -2,6 +2,8 @@
 
 Chip8mu is a Chip-8 emulator built in C++. 
 
+![pong](https://github.com/zachhannum/chip8mu/blob/master/gifs/pong.gif)
+
 Read more about Chip-8 [here](https://en.wikipedia.org/wiki/CHIP-8).
 
 ## How to Play
@@ -20,9 +22,15 @@ Chip8mu takes a command line argument that is the filename of the game you want 
 
 ## Features
 #### Color Themes
+
+![themes](https://github.com/zachhannum/chip8mu/blob/master/gifs/themes.gif)
+
 Chip8mu has 5 different color themes to choose from: Default (white on black), Retro, Ubuntu, Cafe, and Inverted.
 
 #### Command Line Debugger
+
+![debugger](https://github.com/zachhannum/chip8mu/blob/master/gifs/debug.gif)
+
 Chip8mu has a real-time command line debugger that displays opcode, cpu registers `V0` through `VF`, contents of the stack, key states, program counter, stack pointer, Index, and timer values. These values are updated in real-time as the program runs. The game can also be paused with `space`, and using `→` chip8mu will cycle through the game one instruction at a time.
 
 ## Controls
