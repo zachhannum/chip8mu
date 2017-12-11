@@ -376,7 +376,7 @@ void Chip_8::cycle(){
           for(unsigned char x = 0; x < 8; x++){
             //insert pixel into graphics
             unsigned char t_x = (vx + x)%64;
-            unsigned char t_y = (vy + y);
+            unsigned char t_y = (vy + y)%32;
             if(p & (0x80 >> x)){
               //check to make sure pixel is in valid range
               if((t_x < 64) && (t_y < 32)){
