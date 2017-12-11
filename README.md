@@ -13,7 +13,7 @@ Chip8mu uses SDL to draw graphics to the screen. Follow the instructions [here](
 #### Compile
 Chip8mu should compile with any standard c++ compiler. Tested on Ubuntu.
 
-`> g++ -o chip8 main.cpp cpu.cpp graphics.cpp -lSDL`
+`> g++ -o chip8 main.cpp ch8.cpp graphics.cpp -lSDL`
 
 #### Run
 `> ./chip8 /roms/name.rom`
