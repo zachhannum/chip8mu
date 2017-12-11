@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <stdio.h>
-#include "cpu.h"
+#include "chip8.h"
 #include "graphics.h"
 #include "SDL/SDL.h"
 

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include <unistd.h>
-#include "cpu.h"
+#include "chip8.h"
 #include "SDL/SDL.h"
 
 extern int pauseFlag;
